@@ -9,7 +9,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const indexRouter = require('./routes/index');
 const postsRouter = require('./routes/posts');
 const usersRouter = require('./routes/users');
-
+const User = require('./models/user');
 const app = express();
 
 // Set up mongoose connection
@@ -34,10 +34,15 @@ passport.use(
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
       }
-      if (user.password !== password) {
-        return done(null, false, { message: "Incorrect password" });
-      }
-      return done(null, user);
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+          // passwords match! log user in
+          return done(null, user)
+        } else {
+          // passwords do not match!
+          return done(null, false, { message: "Incorrect password" })
+        }
+      })
     } catch(err) {
       return done(err);
     }
@@ -70,6 +75,13 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/posts', postsRouter);
 app.use('/users', usersRouter);
+app.post(
+  "/log-in",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/"
+  })
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
