@@ -4,8 +4,10 @@ const createError = require('http-errors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const session = require("express-session");
 const passport = require('passport');
 const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs"); 
 const indexRouter = require('./routes/index');
 const postsRouter = require('./routes/posts');
 const usersRouter = require('./routes/users');
@@ -28,9 +30,9 @@ app.set('view engine', 'ejs');
 
 // passportJS functions
 passport.use(
-  new LocalStrategy(async(username, password, done) => {
+  new LocalStrategy(async(userName, password, done) => {
     try {
-      const user = await User.findOne({ username: username });
+      const user = await User.findOne({ userName: userName });
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
       }
@@ -63,6 +65,9 @@ passport.deserializeUser(async function(id, done) {
 // middleware
 app.use(logger('dev'));
 app.use(express.json());
+app.use(session({ secret: "cooljacket", resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
