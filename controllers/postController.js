@@ -50,9 +50,25 @@ exports.message_create_post = [
 ];
 
 exports.message_delete_get = (req, res, next) => {
-  res.send(req.body.id)
-}
+  Post.findById(req.params.id)
+    .populate("user")
+    .exec(function (err, post) {
+      if (err) {
+        return next(err);
+      }
+      res.render("pages/message-delete", {
+        title: "Delete Message",
+        user: req.user,
+        post: post,
+      })
+    });
+};
 
 exports.message_delete_post = (req, res, next) => {
-  res.send("not implemented")
+  Post.findByIdAndRemove(req.body.postid, (err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/")
+  })
 }
