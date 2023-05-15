@@ -13,6 +13,25 @@
 
     <% if (user) { %>
     <p>hello <%= user.userName %></p>
+
+    <h2>posts</h2>
+    <ul>
+      <% posts.forEach(post => { %>
+       <li>
+        <p><%= post.subject %></p>
+        <p><%= post.message %></p>
+        <% if (user.member === true) { %>
+          <p><%= post.user.fullname %></p>
+        <% } else { %>
+          <p>Anonymous</p>
+        <% } %>
+        <p><%= post.date %></p>
+        <% if (user.admin === true) { %>
+          <a href="/posts/<%= post._id %>/delete">Delete Message</a>
+        <% } %>
+       </li>
+      <% }) %>
+    </ul>
     <% } else { %>
     <h1>please log in</h1>
     <form action="/log-in" method="POST">

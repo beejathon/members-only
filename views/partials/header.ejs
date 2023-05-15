@@ -1,1 +1,10 @@
-navbar not implemented
+<nav>
+  <% if (user) { %>
+    <a href="/posts/create">write new post</a>
+    <a href="/users/join">join the club</a>
+    <a href="/users/admin">become an admin</a> 
+    <form action="/logout" method="POST">
+      <button type="submit">Sign Out</button>
+    </form>
+  <% } %>
+</nav>

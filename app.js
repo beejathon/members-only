@@ -78,8 +78,8 @@ app.use(function(req, res, next) {
 
 // routes
 app.use('/', indexRouter);
-app.use('/posts', postsRouter);
-app.use('/users', usersRouter);
+app.use('/posts/', postsRouter);
+app.use('/users/', usersRouter);
 app.post(
   "/log-in",
   passport.authenticate("local", {
@@ -87,6 +87,13 @@ app.post(
     failureRedirect: "/"
   })
 );
+app.post(
+  "/logout", function(req, res, next){
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -6,12 +6,12 @@ const postController = require("../controllers/postController");
 router.get("/create", postController.message_create_get);
 
 // POST request to create new message
-router.post("/create", postController.message_create_get);
+router.post("/create", postController.message_create_post);
 
 // GET delete post confirmation
-router.get("/post/:id/delete", postController.message_delete_get);
+router.get("/:id/delete", postController.message_delete_get);
 
 // POST request to delete post
-router.post("/post/:id/delete", postController.message_delete_post);
+router.post("/:id/delete", postController.message_delete_post);
 
 module.exports = router;

@@ -14,4 +14,10 @@ router.get("/join", userController.user_join_get);
 // POST request to join members only access
 router.post("/join", userController.user_join_post);
 
+// GET page to become admin
+router.get("/admin", userController.user_admin_get);
+
+// POST request to become admin
+router.post("/admin", userController.user_admin_post);
+
 module.exports = router;

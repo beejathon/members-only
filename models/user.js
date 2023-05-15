@@ -11,7 +11,7 @@ const UserSchema = new Schema({
   admin: { type: Boolean, required: true }
 })
 
-UserSchema.virtual("full name").get(function() {
+UserSchema.virtual("fullname").get(function() {
   return `${this.firstName} ${this.lastName}`
 })
 

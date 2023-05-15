@@ -82,6 +82,7 @@ exports.user_create_post = [
 
         user.save((err) => {
           if (err) {
+            console.log(err);
             return next(err);
           }
           passport.authenticate("local", {
@@ -99,5 +100,13 @@ exports.user_join_get = (req, res, next) => {
 }
 
 exports.user_join_post = (req, res, next) => {
+  res.send("not implemented")
+}
+
+exports.user_admin_get = (req, res, next) => {
+  res.send("not implemented")
+}
+
+exports.user_admin_post = (req, res, next) => {
   res.send("not implemented")
 }
