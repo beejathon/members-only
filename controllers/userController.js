@@ -1,3 +1,4 @@
+require('dotenv').config();
 const async = require('async');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/user');
@@ -96,17 +97,83 @@ exports.user_create_post = [
 ];
 
 exports.user_join_get = (req, res, next) => {
-  res.send("not implemented")
+  res.render("pages/join-club", {
+    title: "Join the Club",
+    user: req.user,
+  })
 }
 
-exports.user_join_post = (req, res, next) => {
-  res.send("not implemented")
-}
+exports.user_join_post = [
+  body("password", "Password must not be empty.")
+    .trim()
+    .escape()
+    .isLength({ min: 1 }),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+      res.render("pages/join-club", {
+        title: "Join the Club",
+        user: req.user,
+        password: req.body.password,
+        errors: errors.array(),
+      })
+      return;
+    } else if (req.body.password != process.env.club_pw) {
+      res.render("pages/join-club", {
+        title: "Join the Club",
+        user: req.user,
+        password: req.body.password,
+        message: "Wrong password!"
+      })
+      return;
+    } else {
+      User.findByIdAndUpdate(req.user._id, { member: true }, (err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/");
+      })
+    };
+  },
+];
 
 exports.user_admin_get = (req, res, next) => {
-  res.send("not implemented")
+  res.render("pages/admin-join", {
+    title: "Become an Admin",
+    user: req.user,
+  })
 }
 
-exports.user_admin_post = (req, res, next) => {
-  res.send("not implemented")
-}
+exports.user_admin_post = [
+  body("password", "Password must not be empty.")
+    .trim()
+    .escape()
+    .isLength({ min: 1 }),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+      res.render("pages/admin-join", {
+        title: "Become an Admin",
+        user: req.user,
+        password: req.body.password,
+        errors: errors.array(),
+      })
+      return;
+    } else if (req.body.password != process.env.admin_pw) {
+      res.render("pages/admin-join", {
+        title: "Become an Admin",
+        user: req.user,
+        password: req.body.password,
+        message: "Wrong password!"
+      })
+      return;
+    } else {
+      User.findByIdAndUpdate(req.user._id, { admin: true }, (err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/");
+      })
+    };
+  },
+];
